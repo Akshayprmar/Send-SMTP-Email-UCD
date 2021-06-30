@@ -12,7 +12,7 @@ install:
 jdk:
 - oraclejdk9
 script:
-- ls
+- ls dist
 deploy:
   provider: releases
   api_key:
