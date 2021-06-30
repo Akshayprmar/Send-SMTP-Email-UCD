@@ -1,5 +1,5 @@
 /**
- * © Copyright IBM Corporation 2017.
+ * © Copyright IBM Corporation 2020.
  * This is licensed under the following license.
  * The Eclipse Public 1.0 License (http://www.eclipse.org/legal/epl-v10.html)
  * U.S. Government Users Restricted Rights:  Use, duplication or disclosure restricted by GSA ADP Schedule Contract with IBM Corp.
@@ -33,8 +33,15 @@
  *     }
  * }
  */
+import org.apache.tools.ant.filters.ReplaceTokens
 
-def pluginName="smtp-email-open"
+def pluginName="Send-SMTP-Email-UCD"
+
+// project group
+group="com.urbancode.air"
+// project version
+//Version number in plugin.xml must be updated if any change in project version
+version="1.0"
 
 apply plugin: 'groovy'
 
@@ -64,7 +71,7 @@ dependencies {
     implementation 'javax.mail:mail:1.4.1'
     implementation 'javax.activation:activation:1.1.1'
 
-    // This compiles the i18n-scraper script
+    // This implementations the i18n-scraper script
     implementation localGroovy()
     // compile group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.3.6'
     // testCompile group: 'junit', name: 'junit', version: '4.11'
@@ -156,14 +163,15 @@ task distPlugin(type: Zip, dependsOn: ['compileGroovy', 'gatherI18n']) {
         from sourceSets.classes.groovy.srcDirs
         exclude 'META-INF', 'i18n-scraper.groovy'
     }
-    archiveFileName  = "${pluginName}-dev.zip"
+    destinationDirectory=file("${buildDir}/../dist")
+    archiveFileName = "${pluginName}-V${version}.zip"
 }
 
 task gatherI18n(type: JavaExec) {
     delete buildLocaleDir
     mkdir buildLocaleDir
 
-    mainClass = 'i18n-scraper'
+    main = 'i18n-scraper'
     args 'build/locale/en.properties'
     classpath = sourceSets.main.runtimeClasspath
 }
